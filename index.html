@@ -39,6 +39,7 @@
         #result {
             margin-top: 20px;
             font-weight: bold;
+            font-size: 18px;
         }
     </style>
 </head>
@@ -56,10 +57,10 @@
             const number = parseFloat(input);
             
             if (isNaN(number)) {
-                document.getElementById('result').textContent = 'Будь ласка, введіть коректне число';
+                document.getElementById('result').textContent = 'Помилка';
             } else {
                 const result = number * 0.15;
-                document.getElementById('result').textContent = `15% від ${number} = ${result.toFixed(2)}`;
+                document.getElementById('result').textContent = result.toFixed(2);
             }
         }
     </script>
