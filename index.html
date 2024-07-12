@@ -3,89 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Калькулятор інфляції для Монополії</title>
+    <title>Калькулятор 15%</title>
     <style>
-        body { font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; }
-        input, button { margin: 10px 0; padding: 5px; }
-        .history-item { margin: 5px 0; }
-        .history-item input { width: 70%; margin-right: 5px; }
-        .history-item button { margin-left: 5px; }
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .calculator {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        input, button {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
-    <h1>Калькулятор інфляції для Монополії</h1>
-    <div>
-        <label for="inflation-index">Індекс інфляції:</label>
-        <input type="number" id="inflation-index" value="100" min="90" max="200">
-        <button onclick="changeInflation()">Змінити інфляцію</button>
+    <div class="calculator">
+        <h2>Калькулятор 15%</h2>
+        <input type="number" id="inputNumber" placeholder="Введіть число">
+        <button onclick="calculate()">Обчислити 15%</button>
+        <div id="result"></div>
     </div>
-    <div>
-        <label for="base-price">Базова ціна:</label>
-        <input type="number" id="base-price" value="100">
-        <button onclick="calculatePrice()">Розрахувати нову ціну</button>
-    </div>
-    <div id="result"></div>
-    <h2>Історія обрахунків</h2>
-    <div id="history"></div>
 
     <script>
-        let history = [];
-
-        function changeInflation() {
-            let index = document.getElementById('inflation-index');
-            let change = Math.random() < 0.5 ? 0 : 5;
-            index.value = Math.min(Math.max(Number(index.value) + change, 90), 200);
-        }
-
-        function calculatePrice() {
-            let basePrice = Number(document.getElementById('base-price').value);
-            let inflationIndex = Number(document.getElementById('inflation-index').value);
-            let newPrice = basePrice * (inflationIndex / 100);
-            let resultText = `Нова ціна: ${newPrice.toFixed(2)}`;
-            document.getElementById('result').innerText = resultText;
+        function calculate() {
+            const input = document.getElementById('inputNumber').value;
+            const number = parseFloat(input);
             
-            addHistory(basePrice, inflationIndex, newPrice.toFixed(2));
-        }
-
-        function addHistory(basePrice, inflationIndex, newPrice) {
-            let timestamp = new Date().toLocaleString();
-            let historyItem = {
-                id: Date.now(),
-                basePrice: basePrice,
-                inflationIndex: inflationIndex,
-                newPrice: newPrice,
-                name: `Розрахунок ${history.length + 1}`
-            };
-            history.push(historyItem);
-            updateHistory();
-        }
-
-        function updateHistory() {
-            let historyDiv = document.getElementById('history');
-            historyDiv.innerHTML = '';
-            history.forEach(item => {
-                let itemDiv = document.createElement('div');
-                itemDiv.className = 'history-item';
-                itemDiv.innerHTML = `
-                    <input type="text" value="${item.name}" onchange="renameHistory(${item.id}, this.value)">
-                    <span>${item.basePrice} * (${item.inflationIndex} / 100) = ${item.newPrice}</span>
-                    <button onclick="removeHistory(${item.id})">Видалити</button>
-                `;
-                historyDiv.appendChild(itemDiv);
-            });
-        }
-
-        function renameHistory(id, newName) {
-            let item = history.find(item => item.id === id);
-            if (item) {
-                item.name = newName;
-                updateHistory();
+            if (isNaN(number)) {
+                document.getElementById('result').textContent = 'Будь ласка, введіть коректне число';
+            } else {
+                const result = number * 0.15;
+                document.getElementById('result').textContent = `15% від ${number} = ${result.toFixed(2)}`;
             }
-        }
-
-        function removeHistory(id) {
-            history = history.filter(item => item.id !== id);
-            updateHistory();
         }
     </script>
 </body>
