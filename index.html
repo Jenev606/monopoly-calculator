@@ -67,7 +67,7 @@
                 let list = document.getElementById(`property-list-${playerNumber}`);
                 let item = document.createElement('div');
                 item.innerHTML = `${name}: Базова ціна: ${basePrice}, Поточна ціна: ${currentPrice.toFixed(2)}, 
-                                   Ціна закладу: ${mortgagePrice.toFixed(2)}, Ціна викупу: ${(mortgagePrice * 1.1).toFixed(2)} 
+                                   Ціна закладу: ${mortgagePrice.toFixed(2)}, Ціна викупу: ${(mortgagePrice * 2.1).toFixed(2)} 
                                    <button onclick="removeProperty(this)">Видалити</button>`;
                 list.appendChild(item);
                 document.getElementById(`property-name-${playerNumber}`).value = '';
@@ -87,7 +87,7 @@
                 let currentPrice = basePrice * (inflationIndex / 100);
                 let mortgagePrice = currentPrice / 2;
                 property.innerHTML = `${name}: Базова ціна: ${basePrice}, Поточна ціна: ${currentPrice.toFixed(2)}, 
-                                       Ціна закладу: ${mortgagePrice.toFixed(2)}, Ціна викупу: ${(mortgagePrice * 1.1).toFixed(2)} 
+                                       Ціна закладу: ${mortgagePrice.toFixed(2)}, Ціна викупу: ${(mortgagePrice * 2.1).toFixed(2)} 
                                        <button onclick="removeProperty(this)">Видалити</button>`;
             });
         }
