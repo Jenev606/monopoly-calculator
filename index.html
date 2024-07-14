@@ -3,65 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Калькулятор 15%</title>
+    <title>Калькулятор інфляції для Монополії</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f0f0f0;
-        }
-        .calculator {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        input, button {
-            display: block;
-            width: 100%;
-            margin: 10px 0;
-            padding: 10px;
-            font-size: 16px;
-        }
-        button {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-        #result {
-            margin-top: 20px;
-            font-weight: bold;
-            font-size: 18px;
-        }
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        input, button { margin: 10px 0; padding: 5px; }
+        .player-section { border: 1px solid #ccc; padding: 10px; margin-top: 20px; }
+        .property-list { margin-top: 10px; }
+        #result { font-size: 1.2em; font-weight: bold; color: #0066cc; }
     </style>
 </head>
 <body>
-    <div class="calculator">
-        <h2>Калькулятор 15%</h2>
-        <input type="number" id="inputNumber" placeholder="Введіть число">
-        <button onclick="calculate()">Обчислити 15%</button>
-        <div id="result"></div>
+    <h1>Калькулятор інфляції для Монополії</h1>
+    <div>
+        <label for="inflation-index">Індекс інфляції:</label>
+        <input type="number" id="inflation-index" value="100" min="90" max="200">
+        <button onclick="changeInflation()">Змінити інфляцію</button>
+    </div>
+    <div>
+        <label for="base-price">Базова ціна:</label>
+        <input type="number" id="base-price" value="100">
+        <button onclick="calculatePrice()">Розрахувати нову ціну</button>
+    </div>
+    <div id="result"></div>
+
+    <div class="player-section">
+        <h2>Гравець 1</h2>
+        <input type="text" id="property-name-1" placeholder="Назва власності">
+        <input type="number" id="property-price-1" placeholder="Базова ціна">
+        <button onclick="addProperty(1)">Додати власність</button>
+        <div id="property-list-1" class="property-list"></div>
+    </div>
+
+    <div class="player-section">
+        <h2>Гравець 2</h2>
+        <input type="text" id="property-name-2" placeholder="Назва власності">
+        <input type="number" id="property-price-2" placeholder="Базова ціна">
+        <button onclick="addProperty(2)">Додати власність</button>
+        <div id="property-list-2" class="property-list"></div>
     </div>
 
     <script>
-        function calculate() {
-            const input = document.getElementById('inputNumber').value;
-            const number = parseFloat(input);
-            
-            if (isNaN(number)) {
-                document.getElementById('result').textContent = 'Помилка';
-            } else {
-                const result = number * 0.15;
-                document.getElementById('result').textContent = result.toFixed(2);
+        function changeInflation() {
+            let index = document.getElementById('inflation-index');
+            let change = Math.random() < 0.5 ? 0 : 5;
+            index.value = Math.min(Math.max(Number(index.value) + change, 90), 200);
+            updateAllProperties();
+        }
+
+        function calculatePrice() {
+            let basePrice = Number(document.getElementById('base-price').value);
+            let inflationIndex = Number(document.getElementById('inflation-index').value);
+            let newPrice = basePrice * (inflationIndex / 100);
+            document.getElementById('result').innerHTML = `Нова ціна: <span style="font-size: 1.2em; color: #cc0000;">${newPrice.toFixed(2)}</span>`;
+        }
+
+        function addProperty(playerNumber) {
+            let name = document.getElementById(`property-name-${playerNumber}`).value;
+            let basePrice = Number(document.getElementById(`property-price-${playerNumber}`).value);
+            let inflationIndex = Number(document.getElementById('inflation-index').value);
+            if (name && basePrice) {
+                let currentPrice = basePrice * (inflationIndex / 100);
+                let mortgagePrice = currentPrice / 2;
+                let list = document.getElementById(`property-list-${playerNumber}`);
+                let item = document.createElement('div');
+                item.innerHTML = `${name}: Базова ціна: ${basePrice}, Поточна ціна: ${currentPrice.toFixed(2)}, 
+                                   Ціна закладу: ${mortgagePrice.toFixed(2)}, Ціна викупу: ${(mortgagePrice * 1.1).toFixed(2)} 
+                                   <button onclick="removeProperty(this)">Видалити</button>`;
+                list.appendChild(item);
+                document.getElementById(`property-name-${playerNumber}`).value = '';
+                document.getElementById(`property-price-${playerNumber}`).value = '';
             }
+        }
+
+        function removeProperty(button) {
+            button.parentElement.remove();
+        }
+
+        function updateAllProperties() {
+            let inflationIndex = Number(document.getElementById('inflation-index').value);
+            document.querySelectorAll('.property-list div').forEach(property => {
+                let [name, basePrice] = property.innerText.split(':');
+                basePrice = Number(basePrice.split(',')[0].replace('Базова ціна:', '').trim());
+                let currentPrice = basePrice * (inflationIndex / 100);
+                let mortgagePrice = currentPrice / 2;
+                property.innerHTML = `${name}: Базова ціна: ${basePrice}, Поточна ціна: ${currentPrice.toFixed(2)}, 
+                                       Ціна закладу: ${mortgagePrice.toFixed(2)}, Ціна викупу: ${(mortgagePrice * 1.1).toFixed(2)} 
+                                       <button onclick="removeProperty(this)">Видалити</button>`;
+            });
         }
     </script>
 </body>
